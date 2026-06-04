@@ -31,7 +31,9 @@ Dry run:
 .venv/bin/python -m uploader.upload_generated --dry-run
 ```
 
-Upload. Objects are uploaded with `public-read` ACL by default:
+Upload. Objects are uploaded with `public-read` ACL by default. The uploader also
+sets bucket CORS so the GitHub Pages browser can fetch `index.json`, metadata,
+meshes, STEP files, and section images directly from S3.
 
 ```bash
 .venv/bin/python -m uploader.upload_generated

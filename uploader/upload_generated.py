@@ -126,6 +126,27 @@ def build_client(config: S3Config):
     )
 
 
+def configure_bucket_cors(client, bucket: str, *, dry_run: bool) -> None:
+    cors = {
+        "CORSRules": [
+            {
+                "AllowedHeaders": ["*"],
+                "AllowedMethods": ["GET", "HEAD"],
+                "AllowedOrigins": ["*"],
+                "ExposeHeaders": ["ETag"],
+                "MaxAgeSeconds": 3600,
+            }
+        ]
+    }
+    print(f"{'DRY ' if dry_run else ''}CONFIGURE CORS s3://{bucket} (GET, HEAD from any origin)")
+    if not dry_run:
+        try:
+            client.put_bucket_cors(Bucket=bucket, CORSConfiguration=cors)
+        except Exception:
+            cors["CORSRules"][0].pop("ExposeHeaders", None)
+            client.put_bucket_cors(Bucket=bucket, CORSConfiguration=cors)
+
+
 def upload(
     items: list[UploadItem],
     config: S3Config,
@@ -134,6 +155,7 @@ def upload(
     cache_control: str | None,
 ) -> None:
     client = None if dry_run else build_client(config)
+    configure_bucket_cors(client, config.bucket, dry_run=dry_run)
     for item in items:
         if not item.source.exists():
             if item.key == "index.csv":

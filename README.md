@@ -24,7 +24,7 @@ Generate all STEP files, GLB meshes, section images, metadata, and `generated/in
 Brake-disc-only wrapper:
 
 ```bash
-.venv/bin/python src/categories/generate_brake_disc_assets.py
+.venv/bin/python src/categories/001_brake_dics/generate_brake_disc_assets.py
 ```
 
 Generate only STEP files plus metadata/index:
@@ -93,7 +93,8 @@ Preview the upload plan without sending files:
 .venv/bin/python -m uploader.upload_generated --dry-run
 ```
 
-Upload the generated assets. Objects are uploaded with `public-read` ACL by default:
+Upload the generated assets. Objects are uploaded with `public-read` ACL by default,
+and the uploader configures bucket CORS for the static browser:
 
 ```bash
 .venv/bin/python -m uploader.upload_generated
