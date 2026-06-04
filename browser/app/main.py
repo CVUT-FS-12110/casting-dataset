@@ -15,6 +15,7 @@ from fastapi.staticfiles import StaticFiles
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 BROWSER_DIR = PROJECT_ROOT / "browser"
 STATIC_DIR = BROWSER_DIR / "static"
+DOCS_DIR = PROJECT_ROOT / "docs"
 GENERATED_DIR = PROJECT_ROOT / "generated"
 
 app = FastAPI(title="Generated Model Browser")
@@ -76,16 +77,26 @@ def remote_bucket_url() -> str:
 
 @app.get("/")
 def index_page():
+    return file_response(DOCS_DIR / "index.html")
+
+
+@app.get("/browser/")
+def browser_index_page():
     return file_response(STATIC_DIR / "index.html")
 
 
 @app.get("/index.html")
 def index_html():
-    return file_response(STATIC_DIR / "index.html")
+    return file_response(DOCS_DIR / "index.html")
 
 
 @app.get("/model.html")
 def model_html():
+    return file_response(STATIC_DIR / "model.html")
+
+
+@app.get("/browser/model.html")
+def browser_model_html():
     return file_response(STATIC_DIR / "model.html")
 
 

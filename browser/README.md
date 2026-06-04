@@ -9,6 +9,13 @@ python -m browser.run
 
 Open http://127.0.0.1:9010.
 
+The FastAPI test server serves:
+
+```text
+/          docs/index.html landing page
+/browser/  generated model browser
+```
+
 ## Modes
 
 Local mode is the default. FastAPI serves the static pages and fakes a flat bucket at

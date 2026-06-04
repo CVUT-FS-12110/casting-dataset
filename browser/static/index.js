@@ -8,7 +8,7 @@ const searchInput = document.getElementById("search-input");
 function modelHref(id) {
   const params = new URLSearchParams(window.location.search);
   const bucket = params.get("bucket");
-  const target = new URL("/model.html", window.location.origin);
+  const target = new URL("model.html", window.location.href);
   target.searchParams.set("id", id);
   if (bucket) {
     target.searchParams.set("bucket", bucket);
