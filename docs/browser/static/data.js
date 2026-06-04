@@ -20,7 +20,10 @@ export async function loadConfig() {
   } catch {
     // A static-only deployment can skip /config.json and use the default relative bucket.
   }
-  return { assetBaseUrl: "/generated", mode: "local" };
+  return {
+    assetBaseUrl: "https://s3.cl4.du.cesnet.cz/32e8087b_6cd9_4cd6_95a4_8fce18348178:casting-dataset-static",
+    mode: "remote"
+  };
 }
 
 export function assetUrl(config, key) {

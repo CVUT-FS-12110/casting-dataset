@@ -13,13 +13,17 @@ from fastapi.staticfiles import StaticFiles
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
-BROWSER_DIR = PROJECT_ROOT / "browser"
-STATIC_DIR = BROWSER_DIR / "static"
 DOCS_DIR = PROJECT_ROOT / "docs"
+BROWSER_STATIC_DIR = DOCS_DIR / "browser"
+BROWSER_STATIC_ASSET_DIR = BROWSER_STATIC_DIR / "static"
 GENERATED_DIR = PROJECT_ROOT / "generated"
 
 app = FastAPI(title="Generated Model Browser")
-app.mount("/static", StaticFiles(directory=STATIC_DIR, check_dir=False), name="static")
+app.mount(
+    "/browser/static",
+    StaticFiles(directory=BROWSER_STATIC_ASSET_DIR, check_dir=False),
+    name="browser-static",
+)
 
 
 def flat_generated_path(key: str) -> Path:
@@ -82,7 +86,7 @@ def index_page():
 
 @app.get("/browser/")
 def browser_index_page():
-    return file_response(STATIC_DIR / "index.html")
+    return file_response(BROWSER_STATIC_DIR / "index.html")
 
 
 @app.get("/index.html")
@@ -92,17 +96,17 @@ def index_html():
 
 @app.get("/model.html")
 def model_html():
-    return file_response(STATIC_DIR / "model.html")
+    return file_response(BROWSER_STATIC_DIR / "model.html")
 
 
 @app.get("/browser/model.html")
 def browser_model_html():
-    return file_response(STATIC_DIR / "model.html")
+    return file_response(BROWSER_STATIC_DIR / "model.html")
 
 
 @app.get("/models/{model_id}")
 def model_page(model_id: str):
-    return file_response(STATIC_DIR / "model.html")
+    return file_response(BROWSER_STATIC_DIR / "model.html")
 
 
 @app.get("/config.json")

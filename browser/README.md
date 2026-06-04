@@ -2,6 +2,10 @@
 
 Static browser pages for generated model assets.
 
+The static browser app lives in `docs/browser/` so GitHub Pages can serve it
+from `docs/index.html`. The FastAPI app serves that same folder at `/browser/`
+for local testing.
+
 ```bash
 python -m pip install fastapi uvicorn
 python -m browser.run
