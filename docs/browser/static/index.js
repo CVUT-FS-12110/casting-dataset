@@ -13,7 +13,7 @@ function modelHref(id) {
   if (bucket) {
     target.searchParams.set("bucket", bucket);
   }
-  return target.pathname + target.search;
+  return `${target.pathname.split("/").pop()}${target.search}`;
 }
 
 function renderRows(models, config) {

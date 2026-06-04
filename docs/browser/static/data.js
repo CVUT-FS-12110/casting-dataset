@@ -8,7 +8,7 @@ export async function loadConfig() {
     return { assetBaseUrl: window.CASTING_DATA_BUCKET_URL.replace(/\/$/, ""), mode: "remote" };
   }
   try {
-    const response = await fetch("/config.json");
+    const response = await fetch("config.json");
     if (response.ok) {
       const config = await response.json();
       return {

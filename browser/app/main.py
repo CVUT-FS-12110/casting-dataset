@@ -111,6 +111,11 @@ def model_page(model_id: str):
 
 @app.get("/config.json")
 def config():
+    return browser_config()
+
+
+@app.get("/browser/config.json")
+def browser_config():
     remote_url = os.environ.get("CASTING_DATA_BUCKET_URL")
     if remote_url:
         return {
