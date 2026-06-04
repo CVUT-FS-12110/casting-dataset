@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Model</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <main class="page-shell">
+    <nav class="crumbs">
+      <a href="/">Models</a>
+      <span id="model-id-label"></span>
+    </nav>
+
+    <header class="model-header">
+      <div>
+        <p id="model-id" class="eyebrow"></p>
+        <h1 id="model-name">Loading model...</h1>
+        <p id="model-description" class="lead"></p>
+      </div>
+      <div class="action-row">
+        <a id="step-link" class="button" href="#">STEP</a>
+        <a id="mesh-link" class="button" href="#">GLB</a>
+        <a id="metadata-link" class="button" href="#">JSON</a>
+      </div>
+    </header>
+
+    <section class="model-layout">
+      <div id="viewer" class="viewer">
+        <div id="viewer-status" class="viewer-status">Preparing viewer...</div>
+      </div>
+      <aside class="side-panel">
+        <section class="dim-grid" aria-label="Measured dimensions">
+          <div><span>X</span><strong id="dim-x">-</strong></div>
+          <div><span>Y</span><strong id="dim-y">-</strong></div>
+          <div><span>Z</span><strong id="dim-z">-</strong></div>
+        </section>
+        <dl id="metadata-list" class="metadata-list"></dl>
+        <div class="sections-grid">
+          <article>
+            <h2>YZ Section</h2>
+            <img id="section-x" alt="YZ center section">
+          </article>
+          <article>
+            <h2>XZ Section</h2>
+            <img id="section-y" alt="XZ center section">
+          </article>
+          <article>
+            <h2>XY Section</h2>
+            <img id="section-z" alt="XY center section">
+          </article>
+        </div>
+      </aside>
+    </section>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.138.3/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.138.3/examples/js/controls/OrbitControls.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.138.3/examples/js/loaders/GLTFLoader.js"></script>
+  <script type="module" src="/static/model.js"></script>
+</body>
+</html>
