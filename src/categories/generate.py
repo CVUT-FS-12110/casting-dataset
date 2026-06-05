@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import sys
 from dataclasses import dataclass
+from datetime import datetime
 from pathlib import Path
 from typing import Callable
 
@@ -15,6 +16,7 @@ if str(REPO_SRC) not in sys.path:
 from casting_dataset.assets import export_glb, export_section_pngs, measured_dimensions
 from casting_dataset.brake_discs import (
     BrakeDiscSpec,
+    METADATA_DATETIME_FORMAT,
     brake_disc_index_item,
     brake_disc_metadata,
     brake_disc_presets,
@@ -30,7 +32,7 @@ class Category:
     slug: str
     presets: Callable[[], dict[str, BrakeDiscSpec]]
     make_model: Callable[[BrakeDiscSpec], object]
-    metadata: Callable[[BrakeDiscSpec, dict[str, float] | None], dict[str, object]]
+    metadata: Callable[[BrakeDiscSpec, dict[str, float] | None, str], dict[str, object]]
     index_item: Callable[[BrakeDiscSpec, dict[str, float] | None], dict[str, object]]
 
 
@@ -112,7 +114,12 @@ def output_paths(generated_dir: Path, category: Category, model_id: str) -> dict
     }
 
 
-def generate_model(category: Category, spec: BrakeDiscSpec, args: argparse.Namespace) -> dict[str, float] | None:
+def generate_model(
+    category: Category,
+    spec: BrakeDiscSpec,
+    args: argparse.Namespace,
+    last_change: str,
+) -> dict[str, float] | None:
     paths = output_paths(args.generated_dir, category, spec.dataset_id)
     model = category.make_model(spec)
     step_path = export_step(
@@ -131,7 +138,7 @@ def generate_model(category: Category, spec: BrakeDiscSpec, args: argparse.Names
             print(section_path)
 
     dimensions_mm = measured_dimensions(paths["mesh"])
-    write_json(paths["metadata"], category.metadata(spec, dimensions_mm))
+    write_json(paths["metadata"], category.metadata(spec, dimensions_mm, last_change))
     print(paths["metadata"])
     return dimensions_mm
 
@@ -139,11 +146,12 @@ def generate_model(category: Category, spec: BrakeDiscSpec, args: argparse.Names
 def main() -> int:
     args = parse_args()
     generated_count = 0
+    last_change = datetime.now().strftime(METADATA_DATETIME_FORMAT)
 
     for category in selected_categories(args):
         specs = selected_specs(category, args)
         for spec in specs:
-            generate_model(category, spec, args)
+            generate_model(category, spec, args, last_change)
             generated_count += 1
 
     if not generated_count:

@@ -20,7 +20,7 @@ a:hover {
 }
 
 .page-shell {
-  max-width: 1180px;
+  max-width: 1480px;
   margin: 0 auto;
 }
 
@@ -101,9 +101,14 @@ h1 {
 
 .model-table {
   width: 100%;
+  min-width: 1180px;
   border-collapse: collapse;
   background: white;
   border: 1px solid #d8dee6;
+}
+
+.model-table-wrap {
+  overflow-x: auto;
 }
 
 .model-table th,
@@ -126,9 +131,19 @@ h1 {
 }
 
 .dim-cell {
-  width: 190px;
+  width: 170px;
   white-space: nowrap;
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+.date-cell,
+.material-cell,
+.category-cell {
+  white-space: nowrap;
+}
+
+.material-cell {
+  max-width: 180px;
 }
 
 .small-link {
@@ -244,7 +259,9 @@ h1 {
 
 .sections-grid {
   display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
+  margin-top: 16px;
 }
 
 .sections-grid article {
@@ -280,10 +297,6 @@ h1 {
 
   .model-layout {
     grid-template-columns: 1fr;
-  }
-
-  .sections-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 

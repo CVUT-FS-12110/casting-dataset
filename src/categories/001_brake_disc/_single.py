@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+from datetime import datetime
 from pathlib import Path
 
 
@@ -11,6 +12,7 @@ if str(REPO_SRC) not in sys.path:
     sys.path.insert(0, str(REPO_SRC))
 
 from casting_dataset.brake_discs import (
+    METADATA_DATETIME_FORMAT,
     brake_disc_index_item,
     brake_disc_metadata,
     brake_disc_presets,
@@ -61,6 +63,7 @@ def generate_one(preset_name: str, argv: list[str] | None = None) -> int:
         x, y, z = (round(float(value), 1) for value in mesh.extents)
         return {"x": x, "y": y, "z": z}
 
+    last_change = datetime.now().strftime(METADATA_DATETIME_FORMAT)
     spec = brake_disc_presets()[preset_name]
     path = export_step(
         make_brake_disc(spec),
@@ -71,7 +74,11 @@ def generate_one(preset_name: str, argv: list[str] | None = None) -> int:
     )
     args.metadata_dir.mkdir(parents=True, exist_ok=True)
     (args.metadata_dir / f"{spec.dataset_id}.json").write_text(
-        json.dumps(brake_disc_metadata(spec, measured_dimensions(spec.dataset_id)), indent=2) + "\n",
+        json.dumps(
+            brake_disc_metadata(spec, measured_dimensions(spec.dataset_id), last_change),
+            indent=2,
+        )
+        + "\n",
         encoding="utf-8",
     )
     args.index_path.parent.mkdir(parents=True, exist_ok=True)
@@ -81,7 +88,7 @@ def generate_one(preset_name: str, argv: list[str] | None = None) -> int:
                 "schema_version": 1,
                 "asset_layout": "flat",
                 "models": [
-                    brake_disc_index_item(item, measured_dimensions(item.dataset_id))
+                    brake_disc_index_item(item, measured_dimensions(item.dataset_id), last_change)
                     for item in brake_disc_presets().values()
                 ],
             },

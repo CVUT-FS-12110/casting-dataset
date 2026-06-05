@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+from datetime import datetime
 from pathlib import Path
 
 
@@ -12,6 +13,7 @@ if str(REPO_SRC) not in sys.path:
     sys.path.insert(0, str(REPO_SRC))
 
 from casting_dataset.brake_discs import (
+    METADATA_DATETIME_FORMAT,
     brake_disc_index_item,
     brake_disc_metadata,
     brake_disc_presets,
@@ -77,12 +79,13 @@ def main() -> int:
     args = parse_args()
     presets = brake_disc_presets()
     names = args.only or list(presets)
+    last_change = datetime.now().strftime(METADATA_DATETIME_FORMAT)
 
     index_items = []
     for name in names:
         spec = presets[name]
         dimensions_mm = measured_dimensions(args.mesh_dir, spec.dataset_id)
-        index_items.append(brake_disc_index_item(spec, dimensions_mm))
+        index_items.append(brake_disc_index_item(spec, dimensions_mm, last_change))
         model = make_brake_disc(spec)
         path = export_step(
             model,
@@ -93,7 +96,7 @@ def main() -> int:
         )
         args.metadata_dir.mkdir(parents=True, exist_ok=True)
         (args.metadata_dir / f"{spec.dataset_id}.json").write_text(
-            json.dumps(brake_disc_metadata(spec, dimensions_mm), indent=2) + "\n",
+            json.dumps(brake_disc_metadata(spec, dimensions_mm, last_change), indent=2) + "\n",
             encoding="utf-8",
         )
         print(path)

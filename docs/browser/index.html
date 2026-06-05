@@ -19,24 +19,30 @@
     <section class="toolbar">
       <label class="search-box">
         <span>Search</span>
-        <input id="search-input" type="search" placeholder="ID or name">
+        <input id="search-input" type="search" placeholder="ID, name, category, material">
       </label>
       <p id="count-label" class="muted">Loading index...</p>
     </section>
 
-    <table class="model-table">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Name</th>
-          <th>Dimensions</th>
-          <th>Description</th>
-        </tr>
-      </thead>
-      <tbody id="model-list">
-        <tr><td colspan="4">Loading models...</td></tr>
-      </tbody>
-    </table>
+    <div class="model-table-wrap">
+      <table class="model-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Material</th>
+            <th>Created</th>
+            <th>Changed</th>
+            <th>Dimensions</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody id="model-list">
+          <tr><td colspan="8">Loading models...</td></tr>
+        </tbody>
+      </table>
+    </div>
   </main>
   <script type="module" src="static/index.js"></script>
 </body>

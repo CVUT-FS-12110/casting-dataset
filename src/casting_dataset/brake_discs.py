@@ -1,7 +1,15 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, replace
+from datetime import datetime
 from math import cos, pi, sin, tau
+
+
+BRAKE_DISC_CREATED = "26-06-05 00-00-00"
+BRAKE_DISC_SOURCE = "Synthetic, MC/ZK"
+BRAKE_DISC_MATERIAL = ["pearlite", "pearlite-ferrite"]
+BRAKE_DISC_CATEGORY = "brake disc"
+METADATA_DATETIME_FORMAT = "%y-%m-%d %H-%M-%S"
 
 
 @dataclass(frozen=True)
@@ -45,7 +53,7 @@ class BrakeDiscSpec:
 
 
 def brake_disc_presets() -> dict[str, BrakeDiscSpec]:
-    """Representative brake disc examples from docs/categories/breake_dics.md."""
+    """Representative brake disc examples from docs/categories/brake_discs.md."""
     return {
         "001-001": BrakeDiscSpec(
             dataset_id="001-001",
@@ -544,15 +552,22 @@ def preset_with_name(name: str, **changes: object) -> BrakeDiscSpec:
 def brake_disc_metadata(
     spec: BrakeDiscSpec,
     dimensions_mm: dict[str, float] | None = None,
+    last_change: str | None = None,
 ) -> dict[str, object]:
     """Return stable catalog metadata for generated brake disc artifacts."""
     group_id, model_id = spec.dataset_id.split("-", 1)
+    change_time = last_change or datetime.now().strftime(METADATA_DATETIME_FORMAT)
     metadata: dict[str, object] = {
         "full_id": spec.dataset_id,
         "group_id": group_id,
         "model_id": model_id,
         "nice_name": spec.display_name,
         "description": spec.description,
+        "created": BRAKE_DISC_CREATED,
+        "last_change": change_time,
+        "source": BRAKE_DISC_SOURCE,
+        "material": BRAKE_DISC_MATERIAL,
+        "category": BRAKE_DISC_CATEGORY,
     }
     if dimensions_mm:
         metadata["dimensions_mm"] = dimensions_mm
@@ -566,15 +581,22 @@ def brake_disc_metadata(
 def brake_disc_index_item(
     spec: BrakeDiscSpec,
     dimensions_mm: dict[str, float] | None = None,
+    last_change: str | None = None,
 ) -> dict[str, object]:
     """Return compact catalog data for generated/index.json."""
     group_id, model_id = spec.dataset_id.split("-", 1)
+    change_time = last_change or datetime.now().strftime(METADATA_DATETIME_FORMAT)
     item: dict[str, object] = {
         "id": spec.dataset_id,
         "group_id": group_id,
         "model_id": model_id,
         "name": spec.display_name,
         "description": spec.description,
+        "created": BRAKE_DISC_CREATED,
+        "last_change": change_time,
+        "source": BRAKE_DISC_SOURCE,
+        "material": BRAKE_DISC_MATERIAL,
+        "category": BRAKE_DISC_CATEGORY,
     }
     if dimensions_mm:
         item["dimensions_mm"] = dimensions_mm

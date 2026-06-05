@@ -25,13 +25,31 @@ function setStatus(message) {
   fields.status.textContent = message;
 }
 
+function displayValue(value) {
+  if (Array.isArray(value)) {
+    return value.join(", ");
+  }
+  if (value && typeof value === "object") {
+    return JSON.stringify(value);
+  }
+  return value ?? "";
+}
+
+function escapeHtml(value) {
+  return String(displayValue(value))
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+}
+
 function renderMetadata(metadata) {
-  fields.metadata.innerHTML = Object.entries(metadata).map(([key, value]) => {
+  fields.metadata.innerHTML = Object.entries(metadata).filter(([key]) => {
+    return key !== "dimensions_label";
+  }).map(([key, value]) => {
     const label = key.replaceAll("_", " ");
-    const displayValue = typeof value === "object" && value !== null
-      ? JSON.stringify(value)
-      : value;
-    return `<dt>${label}</dt><dd>${displayValue}</dd>`;
+    return `<dt>${escapeHtml(label)}</dt><dd>${escapeHtml(value)}</dd>`;
   }).join("");
 }
 

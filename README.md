@@ -7,7 +7,7 @@ Parametric CAD generators for synthetic cast-iron casting datasets.
 ## Generate Assets
 
 The generator creates the representative brake disc models described in
-`docs/categories/breake_dics.md`. Outputs use catalog IDs such as `001-001`.
+`docs/categories/brake_discs.md`. Outputs use catalog IDs such as `001-001`.
 
 CadQuery currently supports Python 3.10-3.12 best. From a compatible environment:
 
@@ -24,7 +24,7 @@ Generate all STEP files, GLB meshes, section images, metadata, and `generated/in
 Brake-disc-only wrapper:
 
 ```bash
-.venv/bin/python src/categories/001_brake_dics/generate_brake_disc_assets.py
+.venv/bin/python src/categories/001_brake_disc/generate_brake_disc_assets.py
 ```
 
 Generate only STEP files plus metadata/index:
