@@ -8,7 +8,7 @@ from math import cos, pi, sin, tau
 BRAKE_DISC_CREATED = "26-06-05 00-00-00"
 BRAKE_DISC_SOURCE = "Synthetic, MC/ZK"
 BRAKE_DISC_MATERIAL = ["pearlite", "pearlite-ferrite"]
-BRAKE_DISC_CATEGORY = "brake disc"
+BRAKE_DISC_CATEGORY = "brake_disc"
 METADATA_DATETIME_FORMAT = "%y-%m-%d %H-%M-%S"
 
 
@@ -53,11 +53,11 @@ class BrakeDiscSpec:
 
 
 def brake_disc_presets() -> dict[str, BrakeDiscSpec]:
-    """Representative brake disc examples from docs/categories/brake_discs.md."""
+    """Representative brake disc examples from docs/categories/brake_disc.md."""
     return {
-        "001-001": BrakeDiscSpec(
-            dataset_id="001-001",
-            name="001-001",
+        "brake_disc-001": BrakeDiscSpec(
+            dataset_id="brake_disc-001",
+            name="brake_disc-001",
             display_name="Compact Solid Hat Disc",
             description="Small solid rear-style brake disc with a shallow hat and mounting pattern.",
             outer_diameter=252,
@@ -71,9 +71,9 @@ def brake_disc_presets() -> dict[str, BrakeDiscSpec]:
             bolt_circle_diameter=100,
             bolt_hole_diameter=12,
         ),
-        "001-002": BrakeDiscSpec(
-            dataset_id="001-002",
-            name="001-002",
+        "brake_disc-002": BrakeDiscSpec(
+            dataset_id="brake_disc-002",
+            name="brake_disc-002",
             display_name="Straight-Vane Ventilated Disc",
             description="Passenger-car ventilated brake disc with straight radial vanes and a low hat.",
             outer_diameter=300,
@@ -91,9 +91,9 @@ def brake_disc_presets() -> dict[str, BrakeDiscSpec]:
             vane_thickness=4.5,
             mounting_flange_thickness=6.0,
         ),
-        "001-003": BrakeDiscSpec(
-            dataset_id="001-003",
-            name="001-003",
+        "brake_disc-003": BrakeDiscSpec(
+            dataset_id="brake_disc-003",
+            name="brake_disc-003",
             display_name="Staggered Spiral-Vane Ventilated Disc",
             description="Performance-style ventilated brake disc with segmented spiral cooling vanes and a low hat.",
             outer_diameter=340,
@@ -112,9 +112,9 @@ def brake_disc_presets() -> dict[str, BrakeDiscSpec]:
             curved_vanes=True,
             mounting_flange_thickness=6.0,
         ),
-        "001-004": BrakeDiscSpec(
-            dataset_id="001-004",
-            name="001-004",
+        "brake_disc-004": BrakeDiscSpec(
+            dataset_id="brake_disc-004",
+            name="brake_disc-004",
             display_name="Three-Row Cross-Drilled Ventilated Disc",
             description="Ventilated brake disc with straight vanes and three concentric rows of cross-drilled face holes.",
             outer_diameter=330,
@@ -132,9 +132,9 @@ def brake_disc_presets() -> dict[str, BrakeDiscSpec]:
             drilled_rows=((34, 102, 5.5), (34, 126, 6.0), (34, 150, 5.5)),
             mounting_flange_thickness=6.0,
         ),
-        "001-005": BrakeDiscSpec(
-            dataset_id="001-005",
-            name="001-005",
+        "brake_disc-005": BrakeDiscSpec(
+            dataset_id="brake_disc-005",
+            name="brake_disc-005",
             display_name="Angled-Slot Ventilated Disc",
             description="Ventilated brake disc with straight vanes and repeated shallow angled slots on the friction faces.",
             outer_diameter=330,
@@ -155,9 +155,9 @@ def brake_disc_presets() -> dict[str, BrakeDiscSpec]:
             slot_angle_deg=22,
             mounting_flange_thickness=6.0,
         ),
-        "001-006": BrakeDiscSpec(
-            dataset_id="001-006",
-            name="001-006",
+        "brake_disc-006": BrakeDiscSpec(
+            dataset_id="brake_disc-006",
+            name="brake_disc-006",
             display_name="Heavy Straight-Vane Ventilated Disc",
             description="Large thick ventilated brake disc with dense straight vanes and a heavy-duty hub pattern.",
             outer_diameter=380,
@@ -175,9 +175,9 @@ def brake_disc_presets() -> dict[str, BrakeDiscSpec]:
             vane_thickness=5.5,
             mounting_flange_thickness=7.0,
         ),
-        "001-007": BrakeDiscSpec(
-            dataset_id="001-007",
-            name="001-007",
+        "brake_disc-007": BrakeDiscSpec(
+            dataset_id="brake_disc-007",
+            name="brake_disc-007",
             display_name="Deep-Hat Parking-Drum Disc",
             description="Rear brake disc with a deep hat cavity for an integrated parking-brake drum and a far-end mounting flange.",
             outer_diameter=310,
@@ -197,9 +197,9 @@ def brake_disc_presets() -> dict[str, BrakeDiscSpec]:
             drum_inner_diameter=168,
             drum_depth=42,
         ),
-        "001-008": BrakeDiscSpec(
-            dataset_id="001-008",
-            name="001-008",
+        "brake_disc-008": BrakeDiscSpec(
+            dataset_id="brake_disc-008",
+            name="brake_disc-008",
             display_name="Flat Toothed-Bore Disc",
             description="Flat non-ventilated annular disc with a toothed internal bore and no hat or bolt flange.",
             outer_diameter=292,
@@ -221,9 +221,9 @@ def brake_disc_presets() -> dict[str, BrakeDiscSpec]:
             internal_spline_groove_depth=8.0,
             internal_spline_groove_width=5.5,
         ),
-        "001-009": BrakeDiscSpec(
-            dataset_id="001-009",
-            name="001-009",
+        "brake_disc-009": BrakeDiscSpec(
+            dataset_id="brake_disc-009",
+            name="brake_disc-009",
             display_name="Offset Tube-Hub Inner-Flange Ventilated Disc",
             description="Ventilated friction ring offset from an inner mounting flange by a cylindrical tube hub.",
             outer_diameter=326,
@@ -555,12 +555,9 @@ def brake_disc_metadata(
     last_change: str | None = None,
 ) -> dict[str, object]:
     """Return stable catalog metadata for generated brake disc artifacts."""
-    group_id, model_id = spec.dataset_id.split("-", 1)
     change_time = last_change or datetime.now().strftime(METADATA_DATETIME_FORMAT)
     metadata: dict[str, object] = {
         "full_id": spec.dataset_id,
-        "group_id": group_id,
-        "model_id": model_id,
         "nice_name": spec.display_name,
         "description": spec.description,
         "created": BRAKE_DISC_CREATED,
@@ -584,12 +581,9 @@ def brake_disc_index_item(
     last_change: str | None = None,
 ) -> dict[str, object]:
     """Return compact catalog data for generated/index.json."""
-    group_id, model_id = spec.dataset_id.split("-", 1)
     change_time = last_change or datetime.now().strftime(METADATA_DATETIME_FORMAT)
     item: dict[str, object] = {
         "id": spec.dataset_id,
-        "group_id": group_id,
-        "model_id": model_id,
         "name": spec.display_name,
         "description": spec.description,
         "created": BRAKE_DISC_CREATED,

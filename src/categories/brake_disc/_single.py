@@ -26,13 +26,13 @@ def generate_one(preset_name: str, argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--output-dir",
         type=Path,
-        default=Path("generated/step/brake_discs"),
+        default=Path("generated/step/brake_disc"),
         help="Directory where the STEP file will be written.",
     )
     parser.add_argument(
         "--metadata-dir",
         type=Path,
-        default=Path("generated/metadata/brake_discs"),
+        default=Path("generated/metadata/brake_disc"),
         help="Directory where the JSON metadata file will be written.",
     )
     parser.add_argument(
@@ -44,7 +44,7 @@ def generate_one(preset_name: str, argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--mesh-dir",
         type=Path,
-        default=Path("generated/mesh/brake_discs"),
+        default=Path("generated/mesh/brake_disc"),
         help="Directory containing GLB files used for measured dimensions.",
     )
     args = parser.parse_args(argv)

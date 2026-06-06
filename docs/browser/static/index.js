@@ -72,7 +72,9 @@ function searchableText(model) {
 
 async function main() {
   const config = await loadConfig();
-  modeLabel.textContent = config.mode === "local" ? "Local bucket" : "Remote bucket";
+  modeLabel.textContent = config.mode === "playground"
+    ? "Playground"
+    : config.mode === "local" ? "Local bucket" : "Remote bucket";
   const index = await loadIndex(config);
   const models = index.models || [];
   countLabel.textContent = `${models.length} model${models.length === 1 ? "" : "s"}`;

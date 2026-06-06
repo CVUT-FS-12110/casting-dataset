@@ -33,13 +33,13 @@ def flat_generated_path(key: str) -> Path:
 
     parts = clean_key.parts
     if parts == ("index.json",):
-        return GENERATED_DIR / "index.json"
+        return generated_dir() / "index.json"
     if len(parts) != 2:
         raise HTTPException(status_code=404, detail="Asset not found")
 
     folder, filename = parts
     if folder in {"metadata", "mesh", "sections", "step"}:
-        return find_generated_asset(GENERATED_DIR / folder, filename)
+        return find_generated_asset(generated_dir() / folder, filename)
 
     raise HTTPException(status_code=404, detail="Asset not found")
 
@@ -54,6 +54,13 @@ def find_generated_asset(root: Path, filename: str) -> Path:
     if matches:
         return matches[0]
     raise HTTPException(status_code=404, detail="Asset not found")
+
+
+def generated_dir() -> Path:
+    configured = os.environ.get("CASTING_DATA_GENERATED_DIR")
+    if configured:
+        return Path(configured)
+    return GENERATED_DIR
 
 
 def file_response(path: Path) -> FileResponse:
@@ -104,8 +111,8 @@ def browser_model_html():
     return file_response(BROWSER_STATIC_DIR / "model.html")
 
 
-@app.get("/models/{model_id}")
-def model_page(model_id: str):
+@app.get("/models/{catalog_id}")
+def model_page(catalog_id: str):
     return file_response(BROWSER_STATIC_DIR / "model.html")
 
 
@@ -125,7 +132,7 @@ def browser_config():
         }
     return {
         "assetBaseUrl": "/generated",
-        "mode": "local",
+        "mode": os.environ.get("CASTING_DATA_BROWSER_MODE", "local"),
     }
 
 

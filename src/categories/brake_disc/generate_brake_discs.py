@@ -29,13 +29,13 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--output-dir",
         type=Path,
-        default=Path("generated/step/brake_discs"),
+        default=Path("generated/step/brake_disc"),
         help="Directory where STEP files will be written.",
     )
     parser.add_argument(
         "--metadata-dir",
         type=Path,
-        default=Path("generated/metadata/brake_discs"),
+        default=Path("generated/metadata/brake_disc"),
         help="Directory where JSON metadata files will be written.",
     )
     parser.add_argument(
@@ -47,7 +47,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--mesh-dir",
         type=Path,
-        default=Path("generated/mesh/brake_discs"),
+        default=Path("generated/mesh/brake_disc"),
         help="Directory containing GLB files used for measured dimensions.",
     )
     parser.add_argument(

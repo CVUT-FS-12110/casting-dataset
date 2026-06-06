@@ -9,8 +9,6 @@ from pathlib import Path
 
 REQUIRED_METADATA_KEYS = (
     "full_id",
-    "group_id",
-    "model_id",
     "nice_name",
     "description",
     "created",
@@ -39,8 +37,6 @@ def index_item_from_metadata(path: Path) -> dict[str, object]:
     validate_metadata(path, metadata)
     item: dict[str, object] = {
         "id": metadata["full_id"],
-        "group_id": metadata["group_id"],
-        "model_id": metadata["model_id"],
         "name": metadata["nice_name"],
         "description": metadata["description"],
         "created": metadata["created"],
@@ -92,8 +88,6 @@ def rebuild_index(generated_dir: Path) -> Path:
 def write_csv(path: Path, models: list[dict[str, object]]) -> None:
     fieldnames = [
         "id",
-        "group_id",
-        "model_id",
         "name",
         "description",
         "created",
@@ -116,8 +110,6 @@ def write_csv(path: Path, models: list[dict[str, object]]) -> None:
             writer.writerow(
                 {
                     "id": model.get("id", ""),
-                    "group_id": model.get("group_id", ""),
-                    "model_id": model.get("model_id", ""),
                     "name": model.get("name", ""),
                     "description": model.get("description", ""),
                     "created": model.get("created", ""),

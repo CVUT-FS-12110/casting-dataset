@@ -8,7 +8,7 @@ The categories are organized according to their approximate production prevalenc
 
 # 🚗 Automotive Components
 
-- ✅ [brake discs](categories/brake_discs.md)
+- ✅ [brake discs](categories/brake_disc.md)
 - ❌ brake drums
 - ❌ engine blocks
 - ❌ exhaust manifolds

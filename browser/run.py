@@ -21,11 +21,21 @@ def parse_args() -> argparse.Namespace:
         "--bucket-url",
         help="Remote bucket base URL for real mode, for example https://bucket.example.com",
     )
+    parser.add_argument(
+        "--playground",
+        action="store_true",
+        help="Serve local playground assets from ./temp instead of ./generated.",
+    )
     return parser.parse_args()
 
 
 def main() -> None:
     args = parse_args()
+    if args.playground and args.bucket_url:
+        raise SystemExit("--playground is a local mode and cannot be combined with --bucket-url")
+    if args.playground:
+        os.environ["CASTING_DATA_GENERATED_DIR"] = str(PROJECT_ROOT / "temp")
+        os.environ["CASTING_DATA_BROWSER_MODE"] = "playground"
     if args.bucket_url:
         os.environ["CASTING_DATA_BUCKET_URL"] = args.bucket_url.rstrip("/")
     uvicorn.run("browser.app.main:app", host=args.host, port=args.port, reload=args.reload)

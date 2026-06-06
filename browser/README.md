@@ -43,27 +43,30 @@ The browser expects these keys:
 
 ```text
 index.json
-metadata/001-001.json
-mesh/001-001.glb
-sections/001-001-x.png
-sections/001-001-y.png
-sections/001-001-z.png
-step/001-001.step
+metadata/brake_disc-001.json
+mesh/brake_disc-001.glb
+sections/brake_disc-001-x.png
+sections/brake_disc-001-y.png
+sections/brake_disc-001-z.png
+step/brake_disc-001.step
 ```
 
 Locally those are mapped back to:
 
 ```text
-generated/metadata/brake_discs/001-001.json
-generated/mesh/brake_discs/001-001.glb
-generated/sections/brake_discs/001-001-x.png
-generated/step/brake_discs/001-001.step
+generated/metadata/brake_disc/brake_disc-001.json
+generated/mesh/brake_disc/brake_disc-001.glb
+generated/sections/brake_disc/brake_disc-001-x.png
+generated/step/brake_disc/brake_disc-001.step
 ```
 
 ## Run broswer
 
 Local:
 > .venv/bin/python browser/run.py --host 0.0.0.0 --port 9011
+
+Playground local assets from `temp/`:
+> .venv/bin/python browser/run.py --host 0.0.0.0 --port 9011 --playground
 
 Remote: 
 > .venv/bin/python browser/run.py --host 0.0.0.0 --port 9011 --bucket-url https://s3.cl4.du.cesnet.cz/32e8087b_6cd9_4cd6_95a4_8fce18348178:casting-dataset-static

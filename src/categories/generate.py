@@ -28,7 +28,6 @@ from categories.reindex import rebuild_index
 
 @dataclass(frozen=True)
 class Category:
-    group_id: str
     slug: str
     presets: Callable[[], dict[str, BrakeDiscSpec]]
     make_model: Callable[[BrakeDiscSpec], object]
@@ -37,9 +36,8 @@ class Category:
 
 
 CATEGORIES = {
-    "001": Category(
-        group_id="001",
-        slug="brake_discs",
+    "brake_disc": Category(
+        slug="brake_disc",
         presets=brake_disc_presets,
         make_model=make_brake_disc,
         metadata=brake_disc_metadata,
@@ -65,12 +63,12 @@ def parse_args() -> argparse.Namespace:
         "--only-category",
         nargs="+",
         choices=sorted(CATEGORIES),
-        help="Generate only selected category IDs, for example 001.",
+        help="Generate only selected category slugs, for example brake_disc.",
     )
     parser.add_argument(
         "--only-model",
         nargs="+",
-        help="Generate only selected model IDs, for example 001-003.",
+        help="Generate only selected catalog IDs, for example brake_disc-003.",
     )
     parser.add_argument(
         "--no-index",
@@ -81,8 +79,8 @@ def parse_args() -> argparse.Namespace:
 
 
 def selected_categories(args: argparse.Namespace) -> list[Category]:
-    category_ids = args.only_category or sorted(CATEGORIES)
-    return [CATEGORIES[category_id] for category_id in category_ids]
+    category_slugs = args.only_category or sorted(CATEGORIES)
+    return [CATEGORIES[category_slug] for category_slug in category_slugs]
 
 
 def selected_specs(category: Category, args: argparse.Namespace) -> list[BrakeDiscSpec]:
@@ -105,11 +103,11 @@ def write_json(path: Path, data: object) -> None:
     path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
 
 
-def output_paths(generated_dir: Path, category: Category, model_id: str) -> dict[str, Path]:
+def output_paths(generated_dir: Path, category: Category, catalog_id: str) -> dict[str, Path]:
     return {
-        "step": generated_dir / "step" / category.slug / f"{model_id}.step",
-        "mesh": generated_dir / "mesh" / category.slug / f"{model_id}.glb",
-        "metadata": generated_dir / "metadata" / category.slug / f"{model_id}.json",
+        "step": generated_dir / "step" / category.slug / f"{catalog_id}.step",
+        "mesh": generated_dir / "mesh" / category.slug / f"{catalog_id}.glb",
+        "metadata": generated_dir / "metadata" / category.slug / f"{catalog_id}.json",
         "sections": generated_dir / "sections" / category.slug,
     }
 

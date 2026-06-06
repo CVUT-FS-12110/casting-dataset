@@ -3,7 +3,7 @@ generated/
 .agents
 .env
 nohup.out
-
+temp/
 
 
 # Byte-compiled / optimized / DLL files
@@ -13,6 +13,7 @@ __pycache__/
 
 # Generated CAD dataset artifacts
 generated/
+temp/
 
 # C extensions
 *.so

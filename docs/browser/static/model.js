@@ -89,7 +89,6 @@ async function loadViewer(meshUrl) {
   scene.background = new THREE.Color(0xf7f9fb);
 
   const camera = new THREE.PerspectiveCamera(45, viewer.clientWidth / viewer.clientHeight, 0.1, 100000);
-  camera.up.set(0, 0, 1);
 
   const renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setPixelRatio(window.devicePixelRatio || 1);

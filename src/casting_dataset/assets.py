@@ -58,7 +58,7 @@ def measured_dimensions(glb_path: Path) -> dict[str, float] | None:
     return {"x": x, "y": y, "z": z}
 
 
-def export_section_pngs(glb_path: Path, output_dir: Path, model_id: str) -> list[Path]:
+def export_section_pngs(glb_path: Path, output_dir: Path, catalog_id: str) -> list[Path]:
     try:
         import trimesh
         from PIL import Image, ImageDraw
@@ -74,7 +74,7 @@ def export_section_pngs(glb_path: Path, output_dir: Path, model_id: str) -> list
     for axis, (normal, projection, label) in SECTION_AXES.items():
         origin = mesh.bounds.mean(axis=0)
         section = mesh.section(plane_origin=origin, plane_normal=normal)
-        target = output_dir / f"{model_id}-{axis}.png"
+        target = output_dir / f"{catalog_id}-{axis}.png"
         _draw_section_png(
             section.discrete if section is not None else [],
             projection,

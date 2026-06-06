@@ -17,12 +17,12 @@ The upload uses the flat bucket layout expected by the browser:
 ```text
 index.json
 index.csv
-metadata/001-001.json
-mesh/001-001.glb
-sections/001-001-x.png
-sections/001-001-y.png
-sections/001-001-z.png
-step/001-001.step
+metadata/brake_disc-001.json
+mesh/brake_disc-001.glb
+sections/brake_disc-001-x.png
+sections/brake_disc-001-y.png
+sections/brake_disc-001-z.png
+step/brake_disc-001.step
 ```
 
 Dry run:
