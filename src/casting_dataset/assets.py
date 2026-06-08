@@ -43,6 +43,31 @@ def export_glb(step_path: Path, glb_path: Path) -> Path:
     return glb_path
 
 
+def export_model_glb(model: object, glb_path: Path, tolerance: float = 1.6) -> Path:
+    """Export a CadQuery model to GLB using direct OpenCascade tessellation."""
+    try:
+        import trimesh
+    except ImportError as exc:  # pragma: no cover - depends on local CAD install
+        raise RuntimeError(f"Missing mesh conversion dependency: {exc.name}") from exc
+
+    shape = model.val()
+    vertices, faces = shape.tessellate(tolerance)
+    mesh = trimesh.Trimesh(
+        vertices=[_vector_tuple(vertex) for vertex in vertices],
+        faces=[tuple(face) for face in faces],
+        process=False,
+    )
+    if mesh.is_empty:
+        raise RuntimeError(f"Could not tessellate model for GLB: {glb_path}")
+    glb_path.parent.mkdir(parents=True, exist_ok=True)
+    mesh.export(glb_path)
+    return glb_path
+
+
+def _vector_tuple(vector) -> tuple[float, float, float]:
+    return (float(vector.x), float(vector.y), float(vector.z))
+
+
 def measured_dimensions(glb_path: Path) -> dict[str, float] | None:
     if not glb_path.exists():
         return None

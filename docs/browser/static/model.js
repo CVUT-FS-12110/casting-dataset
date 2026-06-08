@@ -125,24 +125,14 @@ async function loadViewer(meshUrl) {
       new THREE.EdgesGeometry(object.geometry, 10),
       new THREE.LineBasicMaterial({
         color: 0x05070a,
-        transparent: false,
-        depthTest: false
+        transparent: true,
+        opacity: 0.72,
+        depthTest: true,
+        depthWrite: false
       })
     );
     edges.renderOrder = 10;
     object.add(edges);
-
-    const wireframe = new THREE.LineSegments(
-      new THREE.WireframeGeometry(object.geometry),
-      new THREE.LineBasicMaterial({
-        color: 0x0f1720,
-        transparent: true,
-        opacity: 0.16,
-        depthTest: false
-      })
-    );
-    wireframe.renderOrder = 9;
-    object.add(wireframe);
   });
   scene.add(group);
   fitCamera(camera, controls, group);

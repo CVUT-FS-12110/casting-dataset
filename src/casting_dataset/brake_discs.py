@@ -7,8 +7,8 @@ from math import cos, pi, sin, tau
 
 BRAKE_DISC_CREATED = "26-06-05 00-00-00"
 BRAKE_DISC_SOURCE = "Synthetic, MC/ZK"
-BRAKE_DISC_MATERIAL = ["pearlite", "pearlite-ferrite"]
-BRAKE_DISC_CATEGORY = "brake_disc"
+BRAKE_DISC_MATERIAL = ["Pearlite", "Pearlite-ferrite"]
+BRAKE_DISC_CATEGORY = "Brake discs"
 METADATA_DATETIME_FORMAT = "%y-%m-%d %H-%M-%S"
 
 

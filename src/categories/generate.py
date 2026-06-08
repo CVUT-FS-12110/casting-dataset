@@ -13,7 +13,7 @@ REPO_SRC = Path(__file__).resolve().parents[1]
 if str(REPO_SRC) not in sys.path:
     sys.path.insert(0, str(REPO_SRC))
 
-from casting_dataset.assets import export_glb, export_section_pngs, measured_dimensions
+from casting_dataset.assets import export_model_glb, export_section_pngs, measured_dimensions
 from casting_dataset.brake_discs import (
     BrakeDiscSpec,
     METADATA_DATETIME_FORMAT,
@@ -130,7 +130,7 @@ def generate_model(
     print(step_path)
 
     if not args.only_steps:
-        glb_path = export_glb(step_path, paths["mesh"])
+        glb_path = export_model_glb(model, paths["mesh"])
         print(glb_path)
         for section_path in export_section_pngs(glb_path, paths["sections"], spec.dataset_id):
             print(section_path)

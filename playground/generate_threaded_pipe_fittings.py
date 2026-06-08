@@ -16,12 +16,13 @@ REPO_SRC = REPO_ROOT / "src"
 if str(REPO_SRC) not in sys.path:
     sys.path.insert(0, str(REPO_SRC))
 
-from casting_dataset.assets import export_section_pngs, measured_dimensions
+from casting_dataset.assets import export_model_glb, export_section_pngs, measured_dimensions
 from casting_dataset.step import export_step
 from categories.reindex import rebuild_index
 
 
 CATEGORY = "threaded_pipe_fittings"
+CATEGORY_NAME = "Threaded Pipe Fittings"
 SOURCE = "Synthetic playground from docs/categories/Threaded Pipe Fittings.md, MC/ZK"
 CREATED = "26-06-07 00-00-00"
 DATETIME_FORMAT = "%y-%m-%d %H-%M-%S"
@@ -31,8 +32,9 @@ R34_MAJOR_DIAMETER_MM = 26.441
 R1_TPI = 11.0
 R1_PITCH_MM = 25.4 / R1_TPI
 BSPT_DIAMETER_TAPER = 1.0 / 16.0
-THREAD_RIDGE_RADIUS_MM = 0.42
-THREAD_GROOVE_WIDTH_MM = 0.9
+THREAD_FLANK_ANGLE_DEGREES = 55.0
+THREAD_PROFILE_DEPTH_MM = 0.640327 * R1_PITCH_MM
+MALE_THREAD_ROOT_OVERLAP_MM = 0.18
 FEMALE_SOCKET_LIP_RADIUS_MM = 1.4
 FEMALE_SOCKET_OUTER_EDGE_RADIUS_MM = 1.4
 THIN_BODY_DIAMETER_MM = 36.0
@@ -133,13 +135,17 @@ def compound_workplane(cq, solids: list[object]):
     return cq.Workplane("XY").add(cq.Compound.makeCompound(solids))
 
 
+def fused_workplane(cq, solids: list[object]):
+    return cq.Workplane("XY").add(union_all(solids))
+
+
 def vector_tuple(vector) -> tuple[float, float, float]:
     return (float(vector.x), float(vector.y), float(vector.z))
 
 
 def male_thread_body(cq, length: float, axis: str, center=(0, 0, 0), large_end_positive=True):
     drop = length * BSPT_DIAMETER_TAPER / 2
-    large_radius = R1_MAJOR_DIAMETER_MM / 2
+    large_radius = R1_MAJOR_DIAMETER_MM / 2 - THREAD_PROFILE_DEPTH_MM
     small_radius = large_radius - drop
     if large_end_positive:
         return cone(cq, small_radius, large_radius, length, axis, center)
@@ -167,7 +173,7 @@ def cyl_dir(cq, radius: float, length: float, start, direction):
 
 def male_thread_body_dir(cq, length: float, center, direction, large_end_positive=True):
     drop = length * BSPT_DIAMETER_TAPER / 2
-    large_radius = R1_MAJOR_DIAMETER_MM / 2
+    large_radius = R1_MAJOR_DIAMETER_MM / 2 - THREAD_PROFILE_DEPTH_MM
     small_radius = large_radius - drop
     if large_end_positive:
         return cone_dir(cq, small_radius, large_radius, length, center, direction)
@@ -183,8 +189,9 @@ def male_thread_ridges(
     count: int | None = None,
 ) -> list[object]:
     direction = axis_vector(cq, axis)
+    major_radius = R1_MAJOR_DIAMETER_MM / 2 - length * BSPT_DIAMETER_TAPER / 2
     return swept_thread_ridges_dir(
-        cq, length, center, direction, R1_MAJOR_DIAMETER_MM / 2 - length * BSPT_DIAMETER_TAPER / 4
+        cq, length, center, direction, major_radius - THREAD_PROFILE_DEPTH_MM / 2, THREAD_PROFILE_DEPTH_MM
     )
 
 
@@ -197,8 +204,9 @@ def male_thread_ridges_dir(
     count: int | None = None,
 ) -> list[object]:
     direction = direction.normalized()
+    major_radius = R1_MAJOR_DIAMETER_MM / 2 - length * BSPT_DIAMETER_TAPER / 2
     return swept_thread_ridges_dir(
-        cq, length, center, direction, R1_MAJOR_DIAMETER_MM / 2 - length * BSPT_DIAMETER_TAPER / 4
+        cq, length, center, direction, major_radius - THREAD_PROFILE_DEPTH_MM / 2, THREAD_PROFILE_DEPTH_MM
     )
 
 
@@ -208,14 +216,41 @@ def swept_thread_ridges_dir(
     center,
     direction,
     helix_radius: float,
-    ridge_radius: float = THREAD_RIDGE_RADIUS_MM,
+    profile_depth: float = THREAD_PROFILE_DEPTH_MM,
 ) -> list[object]:
     direction = direction.normalized()
     usable = max(length - 2.8, R1_PITCH_MM)
     start = cq.Vector(*center) - direction.multiply(usable / 2)
     helix = cq.Wire.makeHelix(R1_PITCH_MM, usable, helix_radius, start, direction)
-    profile = cq.Wire.makeCircle(ridge_radius, helix.positionAt(0), helix.tangentAt(0))
+    profile = triangular_thread_profile(
+        cq, helix, start, profile_depth, outward=True, root_overlap=MALE_THREAD_ROOT_OVERLAP_MM
+    )
     return [cq.Solid.sweep(profile, [], helix, makeSolid=True, isFrenet=True)]
+
+
+def triangular_thread_profile(
+    cq,
+    helix,
+    axis_start,
+    profile_depth: float,
+    outward: bool,
+    root_overlap: float = 0.0,
+):
+    center = helix.positionAt(0)
+    tangent = helix.tangentAt(0).normalized()
+    radial = (center - axis_start).normalized()
+    side = tangent.cross(radial).normalized()
+    half_width = profile_depth * math.tan(math.radians(THREAD_FLANK_ANGLE_DEGREES / 2))
+    if outward:
+        point = center + radial.multiply(profile_depth / 2)
+        base_offset = profile_depth / 2 + root_overlap
+        base_a = center - radial.multiply(base_offset) + side.multiply(half_width)
+        base_b = center - radial.multiply(base_offset) - side.multiply(half_width)
+    else:
+        point = center - radial.multiply(profile_depth / 2)
+        base_a = center + radial.multiply(profile_depth / 2) + side.multiply(half_width)
+        base_b = center + radial.multiply(profile_depth / 2) - side.multiply(half_width)
+    return cq.Wire.makePolygon([point, base_a, base_b], close=True)
 
 
 def female_thread_groove_cuts(
@@ -229,12 +264,13 @@ def female_thread_groove_cuts(
     direction = cq.Vector(*inward).normalized()
     base_radius = base_bore_diameter / 2
     root_radius = major_diameter / 2 + 0.25
-    groove_radius = min(max((root_radius - base_radius) * 0.42, 0.42), 0.72)
-    helix_radius = base_radius + groove_radius * 0.55
+    groove_depth = min(THREAD_PROFILE_DEPTH_MM, max(root_radius - base_radius, 0.6))
+    bore_overlap = 0.18
+    helix_radius = base_radius + (groove_depth - bore_overlap) / 2
     usable_depth = max(depth - 3.0, R1_PITCH_MM)
     start = cq.Vector(*port_center) + direction.multiply(1.5)
     helix = cq.Wire.makeHelix(R1_PITCH_MM, usable_depth, helix_radius, start, direction)
-    profile = cq.Wire.makeCircle(groove_radius, helix.positionAt(0), helix.tangentAt(0))
+    profile = triangular_thread_profile(cq, helix, start, groove_depth + bore_overlap, outward=True)
     lead_center = cq.Vector(*port_center) + direction.multiply(0.45)
     return [
         cq.Solid.sweep(profile, [], helix, makeSolid=True, isFrenet=True),
@@ -438,10 +474,8 @@ def elbow_female_male(
         cq.Solid.makeCylinder(bore_diameter / 2, male_length + 6, end - end_tangent.multiply(3), end_tangent),
     ]
     cuts += female_thread_groove_cuts(cq, vector_tuple(start_port), vector_tuple(start_dir), 22, bore_diameter)
-    female_ridges = female_thread_ridges(
-        cq, vector_tuple(start_port), vector_tuple(start_dir), 22, bore_diameter
-    )
-    return cq.Compound.makeCompound([cut_all(union_all(solids), cuts)] + thread_ridges + female_ridges)
+    threaded = cut_all(union_all(solids), cuts)
+    return union_all([threaded] + thread_ridges)
 
 
 def make_coupling():
@@ -524,8 +558,7 @@ def make_reducer():
     cuts += female_thread_groove_cuts(cq, (0, 0, 20), (0, 0, -1), 18, 24, R34_MAJOR_DIAMETER_MM)
     threaded = cut_all(body, cuts)
     ridges = male_thread_ridges(cq, 20, "z", (0, 0, -10), large_end_positive=True)
-    ridges += female_thread_ridges(cq, (0, 0, 20), (0, 0, -1), 18, 24, R34_MAJOR_DIAMETER_MM)
-    return compound_workplane(cq, [threaded] + ridges)
+    return fused_workplane(cq, [threaded] + ridges)
 
 
 def make_nipple():
@@ -543,7 +576,7 @@ def make_nipple():
         male_thread_ridges(cq, 20, "z", (0, 0, -22.5), large_end_positive=True)
         + male_thread_ridges(cq, 20, "z", (0, 0, 22.5), large_end_positive=False)
     )
-    return compound_workplane(cq, [body] + ridges)
+    return fused_workplane(cq, [body] + ridges)
 
 
 def make_plug():
@@ -553,7 +586,7 @@ def make_plug():
     dome = cq.Solid.makeSphere(18, cq.Vector(0, 0, 12)).cut(cyl(cq, 40, 36, "z", (0, 0, 29)))
     solids = [male_thread_body(cq, 18, "z", (0, 0, -7.5), large_end_positive=True), head, dome]
     ridges = male_thread_ridges(cq, 18, "z", (0, 0, -7.5), large_end_positive=True)
-    return compound_workplane(cq, [union_all(solids)] + ridges)
+    return fused_workplane(cq, [union_all(solids)] + ridges)
 
 
 def make_square_head_pipe_plug():
@@ -573,7 +606,7 @@ def make_square_head_pipe_plug():
         square_head,
     ]
     ridges = male_thread_ridges(cq, 18, "z", (0, 0, -7.5), large_end_positive=True)
-    return compound_workplane(cq, [union_all(solids)] + ridges)
+    return fused_workplane(cq, [union_all(solids)] + ridges)
 
 
 def make_arc_fitting(angle: float, radius: float, outer_diameter: float, bore_diameter: float):
@@ -752,23 +785,6 @@ def write_json(path: Path, data: object) -> None:
     path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
 
 
-def export_model_glb(model: object, glb_path: Path, tolerance: float = 1.6) -> Path:
-    import trimesh
-
-    shape = model.val()
-    vertices, faces = shape.tessellate(tolerance)
-    mesh = trimesh.Trimesh(
-        vertices=[vector_tuple(vertex) for vertex in vertices],
-        faces=[tuple(face) for face in faces],
-        process=False,
-    )
-    if mesh.is_empty:
-        raise RuntimeError(f"Could not tessellate model for GLB: {glb_path}")
-    glb_path.parent.mkdir(parents=True, exist_ok=True)
-    mesh.export(glb_path)
-    return glb_path
-
-
 def metadata(fitting: Fitting, dimensions_mm: dict[str, float] | None, last_change: str):
     data: dict[str, object] = {
         "full_id": fitting.catalog_id,
@@ -777,8 +793,8 @@ def metadata(fitting: Fitting, dimensions_mm: dict[str, float] | None, last_chan
         "created": CREATED,
         "last_change": last_change,
         "source": SOURCE,
-        "material": ["galvanized steel"],
-        "category": CATEGORY,
+        "material": ["Copper alloys"],
+        "category": CATEGORY_NAME,
         "thread": {
             "standard": "ISO 7-1 / EN 10226-1 BSPT",
             "designation": "R1",
@@ -786,7 +802,9 @@ def metadata(fitting: Fitting, dimensions_mm: dict[str, float] | None, last_chan
             "pitch_mm": round(R1_PITCH_MM, 3),
             "major_diameter_mm": R1_MAJOR_DIAMETER_MM,
             "diameter_taper": "1:16",
-            "geometry_note": "Male threads are continuous swept helical ridges; female threads are continuous helical groove cuts aligned to the socket bore.",
+            "flank_angle_degrees": THREAD_FLANK_ANGLE_DEGREES,
+            "profile_depth_mm": round(THREAD_PROFILE_DEPTH_MM, 3),
+            "geometry_note": "Male threads use swept 55 degree triangular helical ridges; female threads use matching 55 degree triangular helical groove cuts aligned to the socket bore.",
             "effective_turns_by_depth": {
                 "18_mm": round(max(18 - 3.0, R1_PITCH_MM) / R1_PITCH_MM, 2),
                 "20_mm": round(max(20 - 3.0, R1_PITCH_MM) / R1_PITCH_MM, 2),
