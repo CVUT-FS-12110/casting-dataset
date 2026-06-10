@@ -53,11 +53,11 @@ class BrakeDiscSpec:
 
 
 def brake_disc_presets() -> dict[str, BrakeDiscSpec]:
-    """Representative brake disc examples from docs/categories/brake_disc.md."""
+    """Representative brake disc examples from docs/categories/brake_discs.md."""
     return {
-        "brake_disc-001": BrakeDiscSpec(
-            dataset_id="brake_disc-001",
-            name="brake_disc-001",
+        "brake_discs-001": BrakeDiscSpec(
+            dataset_id="brake_discs-001",
+            name="brake_discs-001",
             display_name="Compact Solid Hat Disc",
             description="Small solid rear-style brake disc with a shallow hat and mounting pattern.",
             outer_diameter=252,
@@ -71,9 +71,9 @@ def brake_disc_presets() -> dict[str, BrakeDiscSpec]:
             bolt_circle_diameter=100,
             bolt_hole_diameter=12,
         ),
-        "brake_disc-002": BrakeDiscSpec(
-            dataset_id="brake_disc-002",
-            name="brake_disc-002",
+        "brake_discs-002": BrakeDiscSpec(
+            dataset_id="brake_discs-002",
+            name="brake_discs-002",
             display_name="Straight-Vane Ventilated Disc",
             description="Passenger-car ventilated brake disc with straight radial vanes and a low hat.",
             outer_diameter=300,
@@ -91,9 +91,9 @@ def brake_disc_presets() -> dict[str, BrakeDiscSpec]:
             vane_thickness=4.5,
             mounting_flange_thickness=6.0,
         ),
-        "brake_disc-003": BrakeDiscSpec(
-            dataset_id="brake_disc-003",
-            name="brake_disc-003",
+        "brake_discs-003": BrakeDiscSpec(
+            dataset_id="brake_discs-003",
+            name="brake_discs-003",
             display_name="Staggered Spiral-Vane Ventilated Disc",
             description="Performance-style ventilated brake disc with segmented spiral cooling vanes and a low hat.",
             outer_diameter=340,
@@ -112,9 +112,9 @@ def brake_disc_presets() -> dict[str, BrakeDiscSpec]:
             curved_vanes=True,
             mounting_flange_thickness=6.0,
         ),
-        "brake_disc-004": BrakeDiscSpec(
-            dataset_id="brake_disc-004",
-            name="brake_disc-004",
+        "brake_discs-004": BrakeDiscSpec(
+            dataset_id="brake_discs-004",
+            name="brake_discs-004",
             display_name="Three-Row Cross-Drilled Ventilated Disc",
             description="Ventilated brake disc with straight vanes and three concentric rows of cross-drilled face holes.",
             outer_diameter=330,
@@ -132,9 +132,9 @@ def brake_disc_presets() -> dict[str, BrakeDiscSpec]:
             drilled_rows=((34, 102, 5.5), (34, 126, 6.0), (34, 150, 5.5)),
             mounting_flange_thickness=6.0,
         ),
-        "brake_disc-005": BrakeDiscSpec(
-            dataset_id="brake_disc-005",
-            name="brake_disc-005",
+        "brake_discs-005": BrakeDiscSpec(
+            dataset_id="brake_discs-005",
+            name="brake_discs-005",
             display_name="Angled-Slot Ventilated Disc",
             description="Ventilated brake disc with straight vanes and repeated shallow angled slots on the friction faces.",
             outer_diameter=330,
@@ -155,9 +155,9 @@ def brake_disc_presets() -> dict[str, BrakeDiscSpec]:
             slot_angle_deg=22,
             mounting_flange_thickness=6.0,
         ),
-        "brake_disc-006": BrakeDiscSpec(
-            dataset_id="brake_disc-006",
-            name="brake_disc-006",
+        "brake_discs-006": BrakeDiscSpec(
+            dataset_id="brake_discs-006",
+            name="brake_discs-006",
             display_name="Heavy Straight-Vane Ventilated Disc",
             description="Large thick ventilated brake disc with dense straight vanes and a heavy-duty hub pattern.",
             outer_diameter=380,
@@ -175,9 +175,9 @@ def brake_disc_presets() -> dict[str, BrakeDiscSpec]:
             vane_thickness=5.5,
             mounting_flange_thickness=7.0,
         ),
-        "brake_disc-007": BrakeDiscSpec(
-            dataset_id="brake_disc-007",
-            name="brake_disc-007",
+        "brake_discs-007": BrakeDiscSpec(
+            dataset_id="brake_discs-007",
+            name="brake_discs-007",
             display_name="Deep-Hat Parking-Drum Disc",
             description="Rear brake disc with a deep hat cavity for an integrated parking-brake drum and a far-end mounting flange.",
             outer_diameter=310,
@@ -197,9 +197,9 @@ def brake_disc_presets() -> dict[str, BrakeDiscSpec]:
             drum_inner_diameter=168,
             drum_depth=42,
         ),
-        "brake_disc-008": BrakeDiscSpec(
-            dataset_id="brake_disc-008",
-            name="brake_disc-008",
+        "brake_discs-008": BrakeDiscSpec(
+            dataset_id="brake_discs-008",
+            name="brake_discs-008",
             display_name="Flat Toothed-Bore Disc",
             description="Flat non-ventilated annular disc with a toothed internal bore and no hat or bolt flange.",
             outer_diameter=292,
@@ -221,9 +221,9 @@ def brake_disc_presets() -> dict[str, BrakeDiscSpec]:
             internal_spline_groove_depth=8.0,
             internal_spline_groove_width=5.5,
         ),
-        "brake_disc-009": BrakeDiscSpec(
-            dataset_id="brake_disc-009",
-            name="brake_disc-009",
+        "brake_discs-009": BrakeDiscSpec(
+            dataset_id="brake_discs-009",
+            name="brake_discs-009",
             display_name="Offset Tube-Hub Inner-Flange Ventilated Disc",
             description="Ventilated friction ring offset from an inner mounting flange by a cylindrical tube hub.",
             outer_diameter=326,
@@ -252,7 +252,7 @@ def make_brake_disc(spec: BrakeDiscSpec):
         import cadquery as cq
     except ModuleNotFoundError as exc:  # pragma: no cover - depends on local CAD install
         raise RuntimeError(
-            "CadQuery is required to build brake disc STEP models. Install dependencies with "
+            "CadQuery is required to build brake discs STEP models. Install dependencies with "
             "`python -m pip install -r requirements.txt` using Python 3.10-3.12."
         ) from exc
 

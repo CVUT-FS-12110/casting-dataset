@@ -7,7 +7,7 @@ Parametric CAD generators for synthetic cast-iron casting datasets.
 ## Generate Assets
 
 The generator creates the representative brake disc models described in
-`docs/categories/brake_disc.md`. Outputs use catalog IDs such as `brake_disc-001`.
+`docs/categories/brake_discs.md`. Outputs use catalog IDs such as `brake_discs-001`.
 
 CadQuery currently supports Python 3.10-3.12 best. From a compatible environment:
 
@@ -24,7 +24,7 @@ Generate all STEP files, GLB meshes, section images, metadata, and `generated/in
 Brake-disc-only wrapper:
 
 ```bash
-.venv/bin/python src/categories/brake_disc/generate_brake_disc_assets.py
+.venv/bin/python src/categories/brake_discs/generate_brake_discs_assets.py
 ```
 
 Generate only STEP files plus metadata/index:
@@ -33,28 +33,28 @@ Generate only STEP files plus metadata/index:
 .venv/bin/python src/categories/generate.py --only-steps
 ```
 
-Generate only category `brake_disc`:
+Generate only category `brake_discs`:
 
 ```bash
-.venv/bin/python src/categories/generate.py --only-category brake_disc
+.venv/bin/python src/categories/generate.py --only-category brake_discs
 ```
 
 Generate only one model:
 
 ```bash
-.venv/bin/python src/categories/generate.py --only-model brake_disc-003
+.venv/bin/python src/categories/generate.py --only-model brake_discs-003
 ```
 
 Generate only STEP for one model:
 
 ```bash
-.venv/bin/python src/categories/generate.py --only-steps --only-model brake_disc-003
+.venv/bin/python src/categories/generate.py --only-steps --only-model brake_discs-003
 ```
 
 Skip index rebuilding during generation:
 
 ```bash
-.venv/bin/python src/categories/generate.py --only-model brake_disc-003 --no-index
+.venv/bin/python src/categories/generate.py --only-model brake_discs-003 --no-index
 ```
 
 Rebuild `generated/index.json` from all metadata files:
@@ -72,10 +72,10 @@ The uploader ships the flat browser asset layout to an S3-compatible bucket:
 ```text
 index.json
 index.csv
-metadata/brake_disc-001.json
-mesh/brake_disc-001.glb
-sections/brake_disc-001-x.png
-step/brake_disc-001.step
+metadata/brake_discs-001.json
+mesh/brake_discs-001.glb
+sections/brake_discs-001-x.png
+step/brake_discs-001.step
 ```
 
 It reads bucket credentials from `.env`. Required keys:

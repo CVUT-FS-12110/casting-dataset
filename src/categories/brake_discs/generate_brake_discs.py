@@ -24,18 +24,18 @@ from casting_dataset.step import export_step
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Generate representative brake disc STEP models."
+        description="Generate representative brake discs STEP models."
     )
     parser.add_argument(
         "--output-dir",
         type=Path,
-        default=Path("generated/step/brake_disc"),
+        default=Path("generated/step/brake_discs"),
         help="Directory where STEP files will be written.",
     )
     parser.add_argument(
         "--metadata-dir",
         type=Path,
-        default=Path("generated/metadata/brake_disc"),
+        default=Path("generated/metadata/brake_discs"),
         help="Directory where JSON metadata files will be written.",
     )
     parser.add_argument(
@@ -47,7 +47,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--mesh-dir",
         type=Path,
-        default=Path("generated/mesh/brake_disc"),
+        default=Path("generated/mesh/brake_discs"),
         help="Directory containing GLB files used for measured dimensions.",
     )
     parser.add_argument(

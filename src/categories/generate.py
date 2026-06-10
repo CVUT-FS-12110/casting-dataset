@@ -36,8 +36,8 @@ class Category:
 
 
 CATEGORIES = {
-    "brake_disc": Category(
-        slug="brake_disc",
+    "brake_discs": Category(
+        slug="brake_discs",
         presets=brake_disc_presets,
         make_model=make_brake_disc,
         metadata=brake_disc_metadata,
@@ -63,12 +63,12 @@ def parse_args() -> argparse.Namespace:
         "--only-category",
         nargs="+",
         choices=sorted(CATEGORIES),
-        help="Generate only selected category slugs, for example brake_disc.",
+        help="Generate only selected category slugs, for example brake_discs.",
     )
     parser.add_argument(
         "--only-model",
         nargs="+",
-        help="Generate only selected catalog IDs, for example brake_disc-003.",
+        help="Generate only selected catalog IDs, for example brake_discs-003.",
     )
     parser.add_argument(
         "--no-index",

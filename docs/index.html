@@ -11,42 +11,273 @@
       background: #f4f6f8;
       color: #1f2933;
     }
+
     body {
       margin: 0;
       padding: 32px;
     }
+
     main {
-      max-width: 860px;
+      max-width: 1040px;
       margin: 0 auto;
+      display: grid;
+      gap: 28px;
     }
+
+    h1,
+    h2 {
+      margin: 0;
+      color: #17222d;
+    }
+
     h1 {
-      margin: 0 0 12px;
-      font-size: 30px;
+      font-size: 32px;
     }
+
+    h2 {
+      font-size: 20px;
+    }
+
     p {
-      line-height: 1.5;
+      margin: 0;
+      line-height: 1.55;
       color: #394957;
     }
-    ul {
-      padding-left: 20px;
-      line-height: 1.8;
-    }
+
     a {
       color: #0f5f9c;
       text-decoration: none;
     }
+
     a:hover {
       text-decoration: underline;
+    }
+
+    .hero {
+      display: grid;
+      gap: 14px;
+      padding-bottom: 6px;
+    }
+
+    .annotation {
+      max-width: 760px;
+      font-size: 16px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      width: fit-content;
+      min-height: 38px;
+      padding: 0 14px;
+      border: 1px solid #b9c7d5;
+      background: white;
+      color: #0f4f82;
+      font-weight: 700;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .section {
+      display: grid;
+      gap: 10px;
+    }
+
+    .note {
+      color: #52616f;
+      font-size: 14px;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid #d8dee6;
+      background: white;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      padding: 11px 12px;
+      border-bottom: 1px solid #e6ebf0;
+      text-align: left;
+      vertical-align: top;
+      font-size: 14px;
+    }
+
+    th {
+      background: #edf1f5;
+      color: #17222d;
+      font-weight: 700;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .count-cell {
+      width: 92px;
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .status {
+      color: #52616f;
+      font-size: 14px;
+    }
+
+    @media (max-width: 820px) {
+      body {
+        padding: 22px;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
 <body>
   <main>
-    <h1>Casting Dataset</h1>
-    <p>Documentation and generated model browser entry points.</p>
-    <ul>
-      <li><a href="browser/">Browser app</a></li>
-    </ul>
+    <section class="hero">
+      <h1>Casting Dataset</h1>
+      <p class="annotation">
+        Synthetic 3D casting models with STEP files, GLB previews, section images, and structured metadata for category-level browsing and downstream dataset work.
+      </p>
+      <a class="button" href="browser/">Open Model Browser</a>
+      <p class="status" id="dataset-status">Loading dataset statistics...</p>
+    </section>
+
+    <section class="stats-grid" aria-label="Dataset statistics">
+      <div class="section">
+        <h2>Categories</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Category</th>
+                <th class="count-cell">Items</th>
+              </tr>
+            </thead>
+            <tbody id="category-stats">
+              <tr><td colspan="2">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Materials</h2>
+        <p class="note">Objects might be counted multiple times if they have multiple possible materials.</p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Category</th>
+                <th>Material</th>
+                <th class="count-cell">Items</th>
+              </tr>
+            </thead>
+            <tbody id="material-stats">
+              <tr><td colspan="3">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
   </main>
+
+  <script type="module">
+    import { loadConfig, loadIndex } from "./browser/static/data.js";
+
+    const categoryStats = document.getElementById("category-stats");
+    const materialStats = document.getElementById("material-stats");
+    const datasetStatus = document.getElementById("dataset-status");
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#39;");
+    }
+
+    function materialValues(value) {
+      const rawValues = Array.isArray(value) ? value : [value];
+      return rawValues
+        .flatMap((item) => String(item ?? "").split(","))
+        .map((item) => item.trim())
+        .filter(Boolean);
+    }
+
+    function sortedEntries(map) {
+      return [...map.entries()].sort(([left], [right]) => left.localeCompare(right));
+    }
+
+    function renderCategoryStats(models) {
+      const counts = new Map();
+      for (const model of models) {
+        const category = model.category || "Uncategorized";
+        counts.set(category, (counts.get(category) || 0) + 1);
+      }
+
+      categoryStats.innerHTML = sortedEntries(counts).map(([category, count]) => {
+        return `<tr><td>${escapeHtml(category)}</td><td class="count-cell">${count}</td></tr>`;
+      }).join("") || `<tr><td colspan="2">No categories found.</td></tr>`;
+    }
+
+    function renderMaterialStats(models) {
+      const counts = new Map();
+      for (const model of models) {
+        const category = model.category || "Uncategorized";
+        for (const material of materialValues(model.material)) {
+          const key = `${category}\u0000${material}`;
+          counts.set(key, (counts.get(key) || 0) + 1);
+        }
+      }
+
+      materialStats.innerHTML = [...counts.entries()]
+        .map(([key, count]) => {
+          const [category, material] = key.split("\u0000");
+          return { category, material, count };
+        })
+        .sort((left, right) => {
+          return left.category.localeCompare(right.category)
+            || left.material.localeCompare(right.material);
+        })
+        .map(({ category, material, count }) => {
+          return `<tr>
+            <td>${escapeHtml(category)}</td>
+            <td>${escapeHtml(material)}</td>
+            <td class="count-cell">${count}</td>
+          </tr>`;
+        })
+        .join("") || `<tr><td colspan="3">No materials found.</td></tr>`;
+    }
+
+    async function main() {
+      const config = await loadConfig();
+      const index = await loadIndex(config);
+      const models = index.models || [];
+      datasetStatus.textContent = `${models.length} model${models.length === 1 ? "" : "s"} indexed.`;
+      renderCategoryStats(models);
+      renderMaterialStats(models);
+    }
+
+    main().catch((error) => {
+      datasetStatus.textContent = error.message;
+      categoryStats.innerHTML = `<tr><td colspan="2">Could not load statistics.</td></tr>`;
+      materialStats.innerHTML = `<tr><td colspan="3">Could not load statistics.</td></tr>`;
+    });
+  </script>
 </body>
 </html>

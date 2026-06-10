@@ -1,4 +1,4 @@
-# Brake Disc 3D Model Dataset
+# Brake Discs 3D Model Dataset
 
 ## Goal
 Create a compact but representative collection of common cast-iron brake disc CAD models for:
@@ -17,15 +17,15 @@ The dataset should cover the most common real-world brake disc geometries while 
 
 | Full ID | Nice name | Description |
 | --- | --- | --- |
-| brake_disc-001 | Compact Solid Hat Disc | Small solid rear-style brake disc with a shallow hat and mounting pattern. |
-| brake_disc-002 | Straight-Vane Ventilated Disc | Passenger-car ventilated brake disc with straight radial vanes and a low hat. |
-| brake_disc-003 | Staggered Spiral-Vane Ventilated Disc | Performance-style ventilated brake disc with segmented spiral cooling vanes and a low hat. |
-| brake_disc-004 | Three-Row Cross-Drilled Ventilated Disc | Ventilated brake disc with straight vanes and three concentric rows of cross-drilled face holes. |
-| brake_disc-005 | Angled-Slot Ventilated Disc | Ventilated brake disc with straight vanes and repeated shallow angled slots on the friction faces. |
-| brake_disc-006 | Heavy Straight-Vane Ventilated Disc | Large thick ventilated brake disc with dense straight vanes and a heavy-duty hub pattern. |
-| brake_disc-007 | Deep-Hat Parking-Drum Disc | Rear brake disc with a deep hat cavity for an integrated parking-brake drum and a far-end mounting flange. |
-| brake_disc-008 | Flat Toothed-Bore Disc | Flat non-ventilated annular disc with a toothed internal bore and no hat or bolt flange. |
-| brake_disc-009 | Offset Tube-Hub Inner-Flange Ventilated Disc | Ventilated friction ring offset from an inner mounting flange by a cylindrical tube hub. |
+| brake_discs-001 | Compact Solid Hat Disc | Small solid rear-style brake disc with a shallow hat and mounting pattern. |
+| brake_discs-002 | Straight-Vane Ventilated Disc | Passenger-car ventilated brake disc with straight radial vanes and a low hat. |
+| brake_discs-003 | Staggered Spiral-Vane Ventilated Disc | Performance-style ventilated brake disc with segmented spiral cooling vanes and a low hat. |
+| brake_discs-004 | Three-Row Cross-Drilled Ventilated Disc | Ventilated brake disc with straight vanes and three concentric rows of cross-drilled face holes. |
+| brake_discs-005 | Angled-Slot Ventilated Disc | Ventilated brake disc with straight vanes and repeated shallow angled slots on the friction faces. |
+| brake_discs-006 | Heavy Straight-Vane Ventilated Disc | Large thick ventilated brake disc with dense straight vanes and a heavy-duty hub pattern. |
+| brake_discs-007 | Deep-Hat Parking-Drum Disc | Rear brake disc with a deep hat cavity for an integrated parking-brake drum and a far-end mounting flange. |
+| brake_discs-008 | Flat Toothed-Bore Disc | Flat non-ventilated annular disc with a toothed internal bore and no hat or bolt flange. |
+| brake_discs-009 | Offset Tube-Hub Inner-Flange Ventilated Disc | Ventilated friction ring offset from an inner mounting flange by a cylindrical tube hub. |
 
 ## 1. Small Solid Disc
 
@@ -50,7 +50,7 @@ Baseline geometry and simplest topology.
 ## 2. Standard Ventilated Disc
 
 ### Purpose
-Most common front brake disc in passenger vehicles.
+Most common front brake discs in passenger vehicles.
 
 ### Geometry
 - Two friction plates
