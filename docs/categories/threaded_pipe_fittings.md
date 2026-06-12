@@ -1,13 +1,31 @@
-# Threaded Pipe Fittings Dataset (R 1")
+# Threaded Pipe Fittings 3D Model Dataset
 
+**Category tag:** `threaded_pipe_fittings`
 **Size:** R 1" (DN25)
 **Standards:** EN 10241 (steel threaded pipe fittings), ISO 7-1 / EN 10226-1 (BSPT threads)
 **Thread:** BSPT R1, 11 TPI, taper 1:16, major diameter 33.249 mm
 
-**Reference Catalogs**
+---
 
-* https://www.kompresory-vzduchotechnika.cz/zavitova-sroubeni-ra--z-pozinkovane-oceli/
-* https://hermannschmidt.de/wp-content/uploads/2021/03/Stahlfittings_2021_ohne_Preise.pdf
+# List of Fittings
+
+| Full ID | Nice name | Description |
+| --- | --- | --- |
+| threaded_pipe_fittings-001 | Nipple | R1 male-to-male adapter for joining two female threaded pipe ends. |
+| threaded_pipe_fittings-002 | Hex Coupling | R1 hexagonal female-to-female fitting for joining two threaded pipe ends with wrench flats. |
+| threaded_pipe_fittings-003 | Coupling | R1 round female-to-female pipe coupling for joining two threaded pipe ends. |
+| threaded_pipe_fittings-004 | Reducer | R1 reducer fitting for connecting a male threaded pipe end to a smaller female threaded line. |
+| threaded_pipe_fittings-005 | Plug | R1 threaded closure plug for sealing an unused female port. |
+| threaded_pipe_fittings-006 | Square Head Pipe Plug | R1 round pipe plug with a square drive head for closing a threaded female port. |
+| threaded_pipe_fittings-007 | Bend 90 FF | R1 female-to-female long bend for turning a fluid line through 90 degrees. |
+| threaded_pipe_fittings-008 | Bend 90 FM | R1 street bend for connecting a female socket to a male threaded outlet at 90 degrees. |
+| threaded_pipe_fittings-009 | Bend 45 FF | R1 female-to-female long bend for a gentler 45 degree change of direction in a fluid line. |
+| threaded_pipe_fittings-010 | Bend 45 FM | R1 street bend for connecting a female socket to a male threaded outlet at 45 degrees. |
+| threaded_pipe_fittings-011 | Elbow 90 FF | R1 compact female-to-female elbow for a sharp but castable 90 degree turn. |
+| threaded_pipe_fittings-012 | Elbow 45 FF | R1 compact female-to-female elbow for a sharp but castable 45 degree turn. |
+| threaded_pipe_fittings-013 | Tee | R1 three-port fitting for branching a fluid line at right angles. |
+| threaded_pipe_fittings-014 | Reducing Tee | R1 three-port branch fitting for splitting a fluid line to a smaller branch. |
+| threaded_pipe_fittings-015 | Cross | R1 four-port fitting for distributing a fluid line in two perpendicular directions. |
 
 ---
 

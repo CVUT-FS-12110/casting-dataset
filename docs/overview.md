@@ -31,7 +31,7 @@ The categories are organized according to their approximate production prevalenc
 - ❌ ductile iron pipelines
 - ❌ valves
 - ❌ gate valves
-- ❌ pipe fittings
+- ✅ [threaded pipe fittings](categories/threaded_pipe_fittings.md)
 - ❌ hydrant bodies
 
 ### Notes

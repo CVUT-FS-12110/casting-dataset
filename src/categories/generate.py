@@ -6,7 +6,7 @@ import sys
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Callable
+from typing import Any, Callable
 
 
 REPO_SRC = Path(__file__).resolve().parents[1]
@@ -15,7 +15,6 @@ if str(REPO_SRC) not in sys.path:
 
 from casting_dataset.assets import export_model_glb, export_section_pngs, measured_dimensions
 from casting_dataset.brake_discs import (
-    BrakeDiscSpec,
     METADATA_DATETIME_FORMAT,
     brake_disc_index_item,
     brake_disc_metadata,
@@ -23,16 +22,22 @@ from casting_dataset.brake_discs import (
     make_brake_disc,
 )
 from casting_dataset.step import export_step
+from casting_dataset.threaded_pipe_fittings import (
+    make_threaded_pipe_fitting,
+    threaded_pipe_fitting_index_item,
+    threaded_pipe_fitting_metadata,
+    threaded_pipe_fitting_presets,
+)
 from categories.reindex import rebuild_index
 
 
 @dataclass(frozen=True)
 class Category:
     slug: str
-    presets: Callable[[], dict[str, BrakeDiscSpec]]
-    make_model: Callable[[BrakeDiscSpec], object]
-    metadata: Callable[[BrakeDiscSpec, dict[str, float] | None, str], dict[str, object]]
-    index_item: Callable[[BrakeDiscSpec, dict[str, float] | None], dict[str, object]]
+    presets: Callable[[], dict[str, Any]]
+    make_model: Callable[[Any], object]
+    metadata: Callable[[Any, dict[str, float] | None, str], dict[str, object]]
+    index_item: Callable[[Any, dict[str, float] | None, str | None], dict[str, object]]
 
 
 CATEGORIES = {
@@ -42,7 +47,14 @@ CATEGORIES = {
         make_model=make_brake_disc,
         metadata=brake_disc_metadata,
         index_item=brake_disc_index_item,
-    )
+    ),
+    "threaded_pipe_fittings": Category(
+        slug="threaded_pipe_fittings",
+        presets=threaded_pipe_fitting_presets,
+        make_model=make_threaded_pipe_fitting,
+        metadata=threaded_pipe_fitting_metadata,
+        index_item=threaded_pipe_fitting_index_item,
+    ),
 }
 
 
@@ -83,7 +95,7 @@ def selected_categories(args: argparse.Namespace) -> list[Category]:
     return [CATEGORIES[category_slug] for category_slug in category_slugs]
 
 
-def selected_specs(category: Category, args: argparse.Namespace) -> list[BrakeDiscSpec]:
+def selected_specs(category: Category, args: argparse.Namespace) -> list[Any]:
     specs = list(category.presets().values())
     if not args.only_model:
         return specs
@@ -114,7 +126,7 @@ def output_paths(generated_dir: Path, category: Category, catalog_id: str) -> di
 
 def generate_model(
     category: Category,
-    spec: BrakeDiscSpec,
+    spec: Any,
     args: argparse.Namespace,
     last_change: str,
 ) -> dict[str, float] | None:

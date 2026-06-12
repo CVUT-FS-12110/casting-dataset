@@ -14,5 +14,5 @@ from categories.generate import main
 
 if __name__ == "__main__":
     if not any(arg == "--only-category" or arg.startswith("--only-category=") for arg in sys.argv):
-        sys.argv[1:1] = ["--only-category", "brake_discs"]
+        sys.argv[1:1] = ["--only-category", "threaded_pipe_fittings"]
     raise SystemExit(main())

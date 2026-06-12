@@ -1,24 +1,9 @@
-#!/usr/bin/env python3
 from __future__ import annotations
 
-import argparse
-import json
 import math
-import sys
 from dataclasses import dataclass
 from datetime import datetime
-from pathlib import Path
 from typing import Callable
-
-
-REPO_ROOT = Path(__file__).resolve().parents[1]
-REPO_SRC = REPO_ROOT / "src"
-if str(REPO_SRC) not in sys.path:
-    sys.path.insert(0, str(REPO_SRC))
-
-from casting_dataset.assets import export_model_glb, export_section_pngs, measured_dimensions
-from casting_dataset.step import export_step
-from categories.reindex import rebuild_index
 
 
 CATEGORY = "threaded_pipe_fittings"
@@ -53,28 +38,13 @@ class Fitting:
     make: Callable[[], object]
     parameters_mm: dict[str, object]
 
+    @property
+    def dataset_id(self) -> str:
+        return self.catalog_id
 
-def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(
-        description="Generate the Threaded Pipe Fittings R 1 inch playground dataset."
-    )
-    parser.add_argument(
-        "--output-dir",
-        type=Path,
-        default=REPO_ROOT / "temp",
-        help="Root directory for playground outputs.",
-    )
-    parser.add_argument(
-        "--only-step",
-        action="store_true",
-        help="Generate only STEP plus metadata/index; skip GLB mesh and section images.",
-    )
-    parser.add_argument(
-        "--only",
-        choices=[f"{CATEGORY}-{index:03d}" for index in range(1, 16)],
-        help="Generate just one fitting id for debugging.",
-    )
-    return parser.parse_args()
+    @property
+    def display_name(self) -> str:
+        return self.nice_name
 
 
 def axis_vector(cq, axis: str):
@@ -771,20 +741,6 @@ def fittings() -> list[Fitting]:
     ]
 
 
-def output_paths(output_dir: Path, catalog_id: str) -> dict[str, Path]:
-    return {
-        "step": output_dir / "step" / CATEGORY / f"{catalog_id}.step",
-        "mesh": output_dir / "mesh" / CATEGORY / f"{catalog_id}.glb",
-        "metadata": output_dir / "metadata" / CATEGORY / f"{catalog_id}.json",
-        "sections": output_dir / "sections" / CATEGORY,
-    }
-
-
-def write_json(path: Path, data: object) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
-
-
 def metadata(fitting: Fitting, dimensions_mm: dict[str, float] | None, last_change: str):
     data: dict[str, object] = {
         "full_id": fitting.catalog_id,
@@ -821,45 +777,49 @@ def metadata(fitting: Fitting, dimensions_mm: dict[str, float] | None, last_chan
     return data
 
 
+def threaded_pipe_fitting_presets() -> dict[str, Fitting]:
+    return {fitting.catalog_id: fitting for fitting in fittings()}
+
+
+def make_threaded_pipe_fitting(fitting: Fitting):
+    return fitting.make()
+
+
+def threaded_pipe_fitting_metadata(
+    fitting: Fitting,
+    dimensions_mm: dict[str, float] | None = None,
+    last_change: str | None = None,
+) -> dict[str, object]:
+    change_time = last_change or datetime.now().strftime(DATETIME_FORMAT)
+    return metadata(fitting, dimensions_mm, change_time)
+
+
+def threaded_pipe_fitting_index_item(
+    fitting: Fitting,
+    dimensions_mm: dict[str, float] | None = None,
+    last_change: str | None = None,
+) -> dict[str, object]:
+    data = threaded_pipe_fitting_metadata(fitting, dimensions_mm, last_change)
+    item: dict[str, object] = {
+        "id": data["full_id"],
+        "name": data["nice_name"],
+        "description": data["description"],
+        "created": data["created"],
+        "last_change": data["last_change"],
+        "source": data["source"],
+        "material": data["material"],
+        "category": data["category"],
+    }
+    if "dimensions_mm" in data:
+        item["dimensions_mm"] = data["dimensions_mm"]
+    if "dimensions_label" in data:
+        item["dimensions_label"] = data["dimensions_label"]
+    return item
+
+
 def validate_model(model: object, catalog_id: str) -> None:
     shape = model.val()
     volume = shape.Volume()
     print(f"{catalog_id}: {shape.ShapeType()} valid={shape.isValid()} volume={volume:.3f}")
     if not shape.isValid() or volume <= 0:
         raise RuntimeError(f"Invalid CAD model: {catalog_id}")
-
-
-def main() -> int:
-    args = parse_args()
-    last_change = datetime.now().strftime(DATETIME_FORMAT)
-
-    selected = [f for f in fittings() if args.only in (None, f.catalog_id)]
-    for fitting in selected:
-        paths = output_paths(args.output_dir, fitting.catalog_id)
-        model = fitting.make()
-        validate_model(model, fitting.catalog_id)
-        step_path = export_step(
-            model,
-            paths["step"],
-            dataset_id=fitting.catalog_id,
-            display_name=fitting.nice_name,
-            description=fitting.description,
-        )
-        print(step_path)
-
-        if not args.only_step:
-            glb_path = export_model_glb(model, paths["mesh"])
-            print(glb_path)
-            for section_path in export_section_pngs(glb_path, paths["sections"], fitting.catalog_id):
-                print(section_path)
-
-        dimensions_mm = measured_dimensions(paths["mesh"])
-        write_json(paths["metadata"], metadata(fitting, dimensions_mm, last_change))
-        print(paths["metadata"])
-
-    print(rebuild_index(args.output_dir))
-    return 0
-
-
-if __name__ == "__main__":
-    raise SystemExit(main())

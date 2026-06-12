@@ -6,8 +6,9 @@ Parametric CAD generators for synthetic cast-iron casting datasets.
 
 ## Generate Assets
 
-The generator creates the representative brake disc models described in
-`docs/categories/brake_discs.md`. Outputs use catalog IDs such as `brake_discs-001`.
+The generator creates the representative category models described in
+`docs/categories/`. Outputs use catalog IDs such as `brake_discs-001` and
+`threaded_pipe_fittings-001`.
 
 CadQuery currently supports Python 3.10-3.12 best. From a compatible environment:
 
@@ -27,6 +28,12 @@ Brake-disc-only wrapper:
 .venv/bin/python src/categories/brake_discs/generate_brake_discs_assets.py
 ```
 
+Threaded-pipe-fitting-only wrapper:
+
+```bash
+.venv/bin/python src/categories/threaded_pipe_fittings/generate_threaded_pipe_fittings_assets.py
+```
+
 Generate only STEP files plus metadata/index:
 
 ```bash
@@ -37,6 +44,12 @@ Generate only category `brake_discs`:
 
 ```bash
 .venv/bin/python src/categories/generate.py --only-category brake_discs
+```
+
+Generate only category `threaded_pipe_fittings`:
+
+```bash
+.venv/bin/python src/categories/generate.py --only-category threaded_pipe_fittings
 ```
 
 Generate only one model:
